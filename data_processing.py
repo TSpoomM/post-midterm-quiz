@@ -3,6 +3,7 @@ import csv, os
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
+
 class DB:
     def __init__(self):
         self.database = []
@@ -15,13 +16,16 @@ class DB:
             if table.table_name == table_name:
                 return table
         return None
-    
+
+
 import copy
+
+
 class Table:
     def __init__(self, table_name, table):
         self.table_name = table_name
         self.table = table
-    
+
     def join(self, other_table, common_key):
         joined_table = Table(self.table_name + '_joins_' + other_table.table_name, [])
         for item1 in self.table:
@@ -32,7 +36,7 @@ class Table:
                     dict1.update(dict2)
                     joined_table.table.append(dict1)
         return joined_table
-    
+
     def filter(self, condition):
         filtered_table = Table(self.table_name + '_filtered', [])
         for item1 in self.table:
@@ -41,7 +45,7 @@ class Table:
         return filtered_table
 
     def __is_float(self, element):
-        if element is None: 
+        if element is None:
             return False
         try:
             float(element)
@@ -57,7 +61,7 @@ class Table:
             else:
                 temps.append(item1[aggregation_key])
         return function(temps)
-    
+
     def select(self, attributes_list):
         temps = []
         for item1 in self.table:
@@ -97,6 +101,57 @@ class Table:
             pivot_table.append([item, aggregate_val_list])
         return pivot_table
 
+    def insert_row(self, dict):
+        """
+        This method inserts a dictionary, dict, into a Table object, effectively adding a row to the Table.
+        """
+        # table = dict.Table
+        return [row for row in dict]
+
+    def update_row(self, primary_attribute, primary_attribute_value, update_attribute, update_value):
+        """
+        This method updates the current value of update_attribute to update_value
+        For example, my_table.update_row('Film', 'A Serious Man', 'Year', '2022') will change the 'Year' attribute
+        for the 'Film' 'A Serious Man' from 2009 to 2022
+        """
+        return f"{primary_attribute} {primary_attribute_value} {update_attribute} to {update_value}"
+
     def __str__(self):
         return self.table_name + ':' + str(self.table)
 
+
+# def insert(entry):
+#     data.append(dict(entry))
+#
+#
+
+#
+#
+# data = []
+
+class Find:
+    def __init__(self, table_name, columns):
+        self.table_name = table_name
+        self.columns = columns
+        self.data = []
+
+    def insert(self, something):
+        some_dict = dict(zip(self.columns, something))
+        self.data.append(some_dict)
+
+
+def Find_the_average_value():
+    movie_csv = 'movies.csv'
+    comedy_genre = {}
+    with open(movie_csv) as movie:
+        row = csv.DictReader(movie)
+        col = row.fieldnames
+        count = 1
+        for entry in range(len(movie.readline())):
+            if entry['Genre'] == 'Comedy':
+                if comedy_genre == entry['Worldwide Gross']:
+                    count += 1
+                    comedy_genre = {entry['Worldwide Gross']: count}
+            count = 0
+            # comedy_genre.append(entry['Worldwide Gross'])
+    return max(comedy_genre) / len(comedy_genre)
